@@ -304,9 +304,9 @@ class Export:
         self.dismiss_btn.grid(row=2, pady=10)
 
 
-    # main routine
-    if __name__ == "__main__":
-        root = Tk()
-        root.title("Temperature Converter")
-        something = Converter()
-        root.mainloop()
+# main routine
+if __name__ == "__main__":
+    root = Tk()
+    root.title("Temperature Converter")
+    something = Converter()
+    root.mainloop()
