@@ -34,21 +34,13 @@ class Converter:
         self.temp_converter_label.grid(row=0)
 
         # Help Button (row 1)
-        self.export_button = Button(self.converter_frame, text="Export",
+        self.history_button = Button(self.converter_frame, text="History",
                                   font=("Arial", "14"),
-                                  padx=10, pady=10, command=self.export)
-        self.export_button.grid(row=1)
+                                  padx=10, pady=10, command=lambda: self.history(self.all_calc_list))
+        self.history_button.grid(row=1)
 
-    def export(self):
-        print("You asked for export")
-        get_export = Export(self)
-        get_export.export_text.configure(text="If the filename "
-                                                 "you enter below "
-                                                 "already exists, "
-                                                 "its contents will "
-                                                 "be replaced with "
-                                                 "your calculation "
-                                                 "history",)
+    def history(self, calc_history):
+        History(self, calc_history)
 
 
 class History:
@@ -194,7 +186,7 @@ class Export:
                                       bg=background)
         self.save_error_label.grid(row=4)
 
-        # Save / Cancel Frame (row 4)
+        # Save / Cancel Frame (row 5)
         self.save_cancel_frame = Frame(self.export_frame)
         self.save_cancel_frame.grid(row=5, pady=10)
 
@@ -220,7 +212,7 @@ class Export:
             if re.match(valid_char, letter):
                 continue
 
-            elif letter ==" ":
+            elif letter == " ":
                 problem = "(no spaces allowed)"
 
             else:
@@ -235,18 +227,32 @@ class Export:
         if has_error == "yes":
             # Display error message
             self.save_error_label.config(text="Invalid filename - {}".format())
+            # Change entry box background to pink
+            self.filename_entry.config(bg="#ffafaf")
+            print()
+
+        else:
+            # If there are no errors, generate text file and then close dialouge
+            # add .txt suffix!
+            filename += ".txt"
+
+            # create file to hold data
+            f = open(filename, "w+")
+
+            # add new line  at end of each item
+            for item in calc_history:
+                f.write(item + "\n")
+
+            # close file
+            f.close()
+
+            # close dialogue
+            self.close_export(partner)
 
     def close_export(self, partner):
         # Put export button back to normal...
         partner.export_button.config(state=NORMAL)
         self.export_box.destroy()
-
-        # Dismiss button (row 2)
-        self.dismiss_btn = Button(self.export_frame, text="Dismiss",
-                                  width=10, bg="orange", font="arial 10 bold",
-                                  command=partial(self.close_export, partner))
-        self.dismiss_btn.grid(row=2, pady=10)
-
 
 # main routine
 if __name__ == "__main__":
