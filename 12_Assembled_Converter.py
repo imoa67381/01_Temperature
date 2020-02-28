@@ -125,7 +125,7 @@ class Converter:
                 self.to_convert_entry.configure(bg=error)
 
             # Add Answer to list for History
-            if answer != "yes":
+            if has_errors != "yes":
                 self.all_calc_list.append(answer)
                 self.history_button.config(state=NORMAL)
 
@@ -293,22 +293,25 @@ class Export:
                                     font="Arial 14 bold", justify=CENTER)
         self.filename_entry.grid(row=3, pady=10)
 
-        # Save / Cancel Frame (row 4)
+        # Save / Cancel Frame (row =5)
         self.save_cancel_frame = Frame(self.export_frame)
         self.save_cancel_frame.grid(row=5, pady=10)
 
         # Save and Cancel Buttons (row 0 of save_cancel_frame)
-        self.save_button = Button(self.save_cancel_frame, text="Save")
+        self.save_button = Button(self.save_cancel_frame, text="Save",
+                                  command=partial(lambda: self.save_history(partner, calc_history)))
         self.save_button.grid(row=0, column=0)
 
         self.cancel_button = Button(self.save_cancel_frame, text="Cancel",
                                     command=partial(self.close_export, partner))
         self.cancel_button.grid(row=0, column=1)
 
+
     def close_export(self, partner):
         # Put export button back to normal...
         partner.export_button.config(state=NORMAL)
         self.export_box.destroy()
+
 
 
 class Help:
