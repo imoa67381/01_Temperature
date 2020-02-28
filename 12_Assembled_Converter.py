@@ -306,13 +306,59 @@ class Export:
                                     command=partial(self.close_export, partner))
         self.cancel_button.grid(row=0, column=1)
 
-
     def close_export(self, partner):
         # Put export button back to normal...
         partner.export_button.config(state=NORMAL)
         self.export_box.destroy()
 
+    def save_history(self, partner, calc_history):
+        # Regular expression to check filename is valid
+        valid_char = "[A-Za-z0-9_]"
+        has_error = "no"
 
+        filename = self.filename_entry.get()
+        print(filename)
+
+        for letter in filename:
+            if re.match(valid_char, letter):
+                continue
+
+            elif letter == " ":
+                problem = "(no spaces allowed)"
+
+            else:
+                problem = ("(no {}'s allowed)".format(letter))
+                has_error = "yes"
+                break
+
+        if filename == "":
+            problem = "can't be blank"
+            has_error = "yes"
+
+        if has_error == "yes":
+            # Display error message
+            self.save_error_label.config(text="Invalid filename - {}".format())
+            # Change entry box background to pink
+            self.filename_entry.config(bg="#ffafaf")
+            print()
+
+        else:
+            # If there are no errors, generate text file and then close dialouge
+            # add .txt suffix!
+            filename += ".txt"
+
+            # create file to hold data
+            f = open(filename, "w+")
+
+            # add new line  at end of each item
+            for item in calc_history:
+                f.write(item + "\n")
+
+            # close file
+            f.close()
+
+            # close dialogue
+            self.close_export(partner)
 
 class Help:
     def __init__(self, partner):
